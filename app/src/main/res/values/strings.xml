@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">LastFm Power Ampache 2 Plugin</string>
+    <string name="app_name_topBar">LastFm Power Ampache</string>
+    <string name="token_insert_title">Enter your LastFm Api-Key</string>
+    <string name="token_insert_label">token</string>
+    <string name="clear_stored_title">Clear Stored data</string>
+    <string name="clear_stored_subtitle">Try this if you start getting invalid data in Power Ampache</string>
+</resources>
