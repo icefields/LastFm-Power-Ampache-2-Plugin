@@ -1,9 +1,14 @@
 package luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api
 
+import com.google.gson.Gson
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.local.PluginDatabase
+import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.local.entity.toPluginAlbumData
+import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.local.entity.toPluginAlbumEntity
+import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.local.entity.toPluginArtistData
+import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.local.entity.toPluginArtistEntity
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.album.toPluginAlbumData
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.artist.toPluginArtistData
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.song.toPluginSongData
@@ -22,6 +27,7 @@ class DataInfoFetcherImpl @Inject constructor(
 ): DataInfoFetcher {
     private var fetchJob: Job? = null
     private var fetchAlbumJob: Job? = null
+    private val gson = Gson()
 
     override fun fetchSongData(
         songId: String,
@@ -69,27 +75,23 @@ class DataInfoFetcherImpl @Inject constructor(
     ) {
         fetchAlbumJob?.cancel()
         fetchAlbumJob = applicationCoroutineScope.launch {
-            val albumDb = null//db.dao.getSongLyrics(songTitle = songTitle, artistName = artistName)
+            val albumDb = db.dao.getAlbum(albumMbId = albumMbId, albumName = albumTitle, artistName = artistName)
             if(albumDb != null) {
-                callback(null) //lyricsDb.toSongLyrics())
+                callback(albumDb.toPluginAlbumData())
+                // request the album to refresh db data
+                requestAlbum(
+                    albumId = albumId,
+                    albumTitle = albumTitle,
+                    albumMbId = albumMbId,
+                    artistName = artistName
+                )
             } else {
-                val albumInfo = try {
-                    api.getAlbumInfo(
-                        album = albumTitle,
-                        mbId = if (albumMbId.isNotBlank()) albumMbId else null,
-                        artist = artistName
-                    ).toPluginAlbumData(
-                        albumId = albumId,
-                        albumName = albumTitle,
-                        artistName = artistName,
-                        mbId = albumMbId
-                    ).also {
-                        // update db
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    null
-                }
+                val albumInfo = requestAlbum(
+                    albumId = albumId,
+                    albumTitle = albumTitle,
+                    albumMbId = albumMbId,
+                    artistName = artistName
+                )
                 callback(albumInfo)
             }
         }
@@ -103,32 +105,71 @@ class DataInfoFetcherImpl @Inject constructor(
     ) {
         fetchAlbumJob?.cancel()
         fetchAlbumJob = applicationCoroutineScope.launch {
-            val albumDb = null//db.dao.getSongLyrics(songTitle = songTitle, artistName = artistName)
-            if(albumDb != null) {
-                callback(null) //lyricsDb.toSongLyrics())
+            val artistDb = db.dao.getArtist(artistMbId = artistMbId, artistName = artistName)
+            if(artistDb != null) {
+                callback(artistDb.toPluginArtistData(gson))
+                // request the artist to refresh db data
+                requestArtist(
+                    artistMbId = artistMbId,
+                    artistName = artistName,
+                    artistId = artistId
+                )
             } else {
-                val albumInfo = try {
-                    api.getArtistInfo(
-                        mbId = if (artistMbId.isNotBlank()) artistMbId else null,
-                        artist = artistName
-                    ).toPluginArtistData(
-                        artistId = artistId,
-                        artistName = artistName,
-                        mbId = artistMbId
-                    ).also {
-                        // update db
-                    }
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    null
-                }
-                callback(albumInfo)
+                val artistInfo = requestArtist(
+                    artistMbId = artistMbId,
+                    artistName = artistName,
+                    artistId = artistId
+                )
+                callback(artistInfo)
             }
         }
     }
 
-    override suspend fun clearStoredLyrics() {
-        db.dao.clearLyrics()
+    private suspend fun requestAlbum(
+        albumId: String,
+        albumMbId: String,
+        albumTitle: String,
+        artistName: String,
+    ): PluginAlbumData? = try {
+        api.getAlbumInfo(
+            album = albumTitle,
+            mbId = if (albumMbId.isNotBlank()) albumMbId else null,
+            artist = artistName
+        ).toPluginAlbumData(
+            albumId = albumId,
+            albumName = albumTitle,
+            artistName = artistName,
+            mbId = albumMbId
+        ).also {
+            db.dao.updateAlbums(it.toPluginAlbumEntity())
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+
+    private suspend fun requestArtist(
+        artistId: String,
+        artistMbId: String,
+        artistName: String,
+    ): PluginArtistData? = try {
+        api.getArtistInfo(
+            mbId = if (artistMbId.isNotBlank()) artistMbId else null,
+            artist = artistName
+        ).toPluginArtistData(
+            artistId = artistId,
+            artistName = artistName,
+            mbId = artistMbId
+        ).also {
+            db.dao.updateArtist(it.toPluginArtistEntity(gson))
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+
+    override suspend fun clearStoredData() {
+        db.dao.clearAlbums()
     }
 }
 

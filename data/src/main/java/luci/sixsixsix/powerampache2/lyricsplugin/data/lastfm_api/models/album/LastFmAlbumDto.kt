@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.DESCRIPTION_NOT_VALID
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.DURATION_NOT_VALID
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.RANK_NOT_VALID
+import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.removeHtmlAnchor
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.Album
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.toAlbumTrack
 import luci.sixsixsix.powerampache2.lyricsplugin.domain.models.PluginAlbumData
@@ -26,8 +27,12 @@ fun LastFmAlbumDto.toPluginAlbumData(
     // When fetching an album, a name is received, not a title.
     albumName = album?.name ?: album?.title ?: albumName,
     artistName = album?.artist ?: artistName,
-    description = album?.wiki?.content ?: DESCRIPTION_NOT_VALID,
-    shortDescription = album?.wiki?.summary ?: DESCRIPTION_NOT_VALID,
+    description = sanitizeDescription(
+        album?.wiki?.content?.removeHtmlAnchor() ?: DESCRIPTION_NOT_VALID
+    ),
+    shortDescription = sanitizeDescription(
+        album?.wiki?.summary?.removeHtmlAnchor() ?: DESCRIPTION_NOT_VALID
+    ),
     mbId = album?.mbid ?: mbId,
     language = "", // not available in lastFm
     lyrics = "", // not available in lastFm
@@ -45,3 +50,14 @@ fun LastFmAlbumDto.toPluginAlbumData(
     playCount = album?.playcount ?: 0,
     tracks = album?.tracks?.track?.mapNotNull { it?.toAlbumTrack() } ?: listOf()
 )
+
+/**
+ * TODO : description itself might contain those words leading to unreadable sentences
+ */
+fun sanitizeDescription(descr: String): String = descr.replace("youtube | facebook | bandcamp", "")
+    .replace("youtube", "")
+    .replace("facebook", "")
+    .replace("bandcamp", "")
+    .replace("soundcloud", "")
+    .replace("merch store", "")
+    .replace("| |", "")

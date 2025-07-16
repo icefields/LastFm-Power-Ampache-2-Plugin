@@ -29,5 +29,5 @@ interface DataInfoFetcher {
         callback: (PluginArtistData?) -> Unit
     )
 
-    suspend fun clearStoredLyrics()
+    suspend fun clearStoredData()
 }

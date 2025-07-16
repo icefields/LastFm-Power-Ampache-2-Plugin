@@ -5,7 +5,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import luci.sixsixsix.powerampache2.lyricsplugin.domain.local.SharedPreferencesManager
-import luci.sixsixsix.powerampache2.lyricsplugin.domain.models.PluginSongData
 import luci.sixsixsix.powerampache2.lyricsplugin.domain.usecase.ClearStoredLyricsUseCase
 import luci.sixsixsix.powerampache2.lyricsplugin.domain.usecase.FetchSongInfoUseCase
 import javax.inject.Inject
@@ -16,10 +15,10 @@ class MainScreenViewModel @Inject constructor(
     private val clearStoredLyricsUseCase: ClearStoredLyricsUseCase,
     private val sharedPreferencesManager: SharedPreferencesManager
 ): ViewModel() {
-    val tokenStateFlow = sharedPreferencesManager.tokenStateFlow
+    val tokenStateFlow = sharedPreferencesManager.apiKeyStateFlow
 
     fun setToken(newToken: String) {
-        sharedPreferencesManager.token = newToken
+        sharedPreferencesManager.apiKey = newToken
     }
 
     fun clearStoredLyrics() = viewModelScope.launch {

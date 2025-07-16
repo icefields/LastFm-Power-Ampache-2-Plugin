@@ -4,7 +4,9 @@ package luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.artist
 import androidx.annotation.Keep
 import com.google.gson.annotations.SerializedName
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.DESCRIPTION_NOT_VALID
+import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.removeHtmlAnchor
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.Artist
+import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.album.sanitizeDescription
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.toSimilarArtist
 import luci.sixsixsix.powerampache2.lyricsplugin.domain.models.PluginArtistData
 
@@ -21,11 +23,10 @@ fun LastFmArtistDto.toPluginArtistData(
 ) = PluginArtistData(
     id = artistId,
     artistName = artistName,
-    description = artist?.bio?.content ?: DESCRIPTION_NOT_VALID,
-    shortDescription = artist?.bio?.summary ?: DESCRIPTION_NOT_VALID,
+    description = sanitizeDescription(artist?.bio?.content?.removeHtmlAnchor() ?: DESCRIPTION_NOT_VALID),
+    shortDescription = sanitizeDescription(artist?.bio?.summary?.removeHtmlAnchor() ?: DESCRIPTION_NOT_VALID),
     mbId = artist?.mbid ?: mbId,
     language = "",
-    lyrics = "",
     imageUrl =  artist?.image?.last()?.text ?: "",
     year = "",
     url = artist?.url ?: "",

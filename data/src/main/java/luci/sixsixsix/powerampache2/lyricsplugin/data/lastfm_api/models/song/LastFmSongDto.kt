@@ -6,6 +6,7 @@ import com.google.gson.annotations.SerializedName
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.DESCRIPTION_NOT_VALID
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.DURATION_NOT_VALID
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.POSITION_NOT_VALID
+import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.removeHtmlAnchor
 import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.models.Track
 import luci.sixsixsix.powerampache2.lyricsplugin.domain.models.PluginSongData
 
@@ -25,8 +26,8 @@ fun LastFmSongDto.toPluginSongData(
         id = songId,
         title = track?.name ?: songName,
         mbId = track?.mbid ?: mbId,
-        description = track?.wiki?.content ?: DESCRIPTION_NOT_VALID,
-        shortDescription = track?.wiki?.summary ?: DESCRIPTION_NOT_VALID,
+        description = track?.wiki?.content?.removeHtmlAnchor() ?: DESCRIPTION_NOT_VALID,
+        shortDescription = track?.wiki?.summary?.removeHtmlAnchor() ?: DESCRIPTION_NOT_VALID,
         // When fetching a song, a title is received, not a name.
         albumName = track?.album?.title ?: track?.album?.name ?: albumName,
         artistName = track?.artist?.name ?: artistName,

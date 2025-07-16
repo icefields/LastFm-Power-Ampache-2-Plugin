@@ -21,6 +21,8 @@ android {
         properties.load(project.rootProject.file("secretsnot.properties").inputStream())
     }
     val lastFmApiKey = properties.getProperty("LASTFM_API_KEY")
+    val lastFmSecretKey = properties.getProperty("LASTFM_SECRET_KEY")
+
 
     defaultConfig {
         minSdk = 30
@@ -29,6 +31,7 @@ android {
         consumerProguardFiles("consumer-rules.pro")
 
         buildConfigField("String", "LASTFM_API_KEY", lastFmApiKey)
+        buildConfigField("String", "LASTFM_SECRET_KEY", lastFmSecretKey)
 
         ksp {
             arg("room.schemaLocation", "$projectDir/schemas")
