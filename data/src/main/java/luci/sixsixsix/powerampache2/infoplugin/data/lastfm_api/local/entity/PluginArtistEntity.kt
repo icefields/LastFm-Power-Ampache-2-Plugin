@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.google.gson.Gson
 import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.common.EMPTY_TAGS
+import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.common.parseImage
 import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.common.parseTags
 import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.common.tagsToString
 import luci.sixsixsix.powerampache2.infoplugin.domain.models.PluginArtistData
@@ -13,6 +14,8 @@ import luci.sixsixsix.powerampache2.infoplugin.domain.models.SimilarArtist
 @Entity
 data class PluginArtistEntity(
     @PrimaryKey val id: String,
+    @ColumnInfo(name = "ampacheId", defaultValue = "0")
+    val ampacheId: String,
     val artistName: String,
     val description: String,
     val shortDescription: String,
@@ -42,13 +45,13 @@ fun similarListToString(similarList: List<SimilarArtist>, gson: Gson): String =
     gson.toJson(SimilarWrapper(similarList))
 
 fun PluginArtistEntity.toPluginArtistData(gson: Gson) = PluginArtistData(
-    id = id,
+    id = ampacheId,
     artistName = artistName,
     description = description,
     shortDescription = shortDescription,
     mbId = mbId,
     language = language,
-    imageUrl = imageUrl,
+    imageUrl = parseImage(imageUrl),
     year = year,
     url = url,
     onTour = onTour,
@@ -59,13 +62,14 @@ fun PluginArtistEntity.toPluginArtistData(gson: Gson) = PluginArtistData(
 )
 
 fun PluginArtistData.toPluginArtistEntity(gson: Gson) = PluginArtistEntity(
-    id = id,
+    id = artistName.trim().lowercase(),
+    ampacheId = id,
     artistName = artistName,
     description = description,
     shortDescription = shortDescription,
     mbId = mbId,
     language = language,
-    imageUrl = imageUrl,
+    imageUrl = parseImage(imageUrl),
     year = year,
     url = url,
     onTour = onTour,

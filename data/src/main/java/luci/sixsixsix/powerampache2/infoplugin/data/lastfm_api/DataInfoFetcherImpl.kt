@@ -180,6 +180,7 @@ class DataInfoFetcherImpl @Inject constructor(
             artistName = artistName,
             mbId = artistMbId
         ).also {
+            println("aaaa ${it.imageUrl}")
             db.dao.updateArtist(it.toPluginArtistEntity(gson))
         }
     } catch (e: Exception) {
