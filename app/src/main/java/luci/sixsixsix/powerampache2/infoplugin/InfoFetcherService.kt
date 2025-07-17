@@ -20,9 +20,9 @@ import luci.sixsixsix.powerampache2.infoplugin.common.KEY_REQUEST_ALBUM_TITLE
 import luci.sixsixsix.powerampache2.infoplugin.common.KEY_REQUEST_ARTIST_NAME
 import luci.sixsixsix.powerampache2.infoplugin.common.KEY_REQUEST_JSON
 import luci.sixsixsix.powerampache2.infoplugin.common.KEY_REQUEST_SONG_TITLE
-import luci.sixsixsix.powerampache2.lyricsplugin.domain.usecase.FetchAlbumInfoUseCase
-import luci.sixsixsix.powerampache2.lyricsplugin.domain.usecase.FetchArtistInfoUseCase
-import luci.sixsixsix.powerampache2.lyricsplugin.domain.usecase.FetchSongInfoUseCase
+import luci.sixsixsix.powerampache2.infoplugin.domain.usecase.FetchAlbumInfoUseCase
+import luci.sixsixsix.powerampache2.infoplugin.domain.usecase.FetchArtistInfoUseCase
+import luci.sixsixsix.powerampache2.infoplugin.domain.usecase.FetchSongInfoUseCase
 import org.json.JSONObject
 import javax.inject.Inject
 

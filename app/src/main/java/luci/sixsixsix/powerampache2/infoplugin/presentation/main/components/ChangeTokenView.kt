@@ -12,7 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import luci.sixsixsix.powerampache2.infoplugin.presentation.main.mainFontSize
 import luci.sixsixsix.powerampache2.infoplugin.presentation.main.screenPadding
 import luci.sixsixsix.powerampache2.infoplugin.R
-import luci.sixsixsix.powerampache2.lyricsplugin.data.lastfm_api.common.LASTFM_API_KEY
+import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.common.LASTFM_API_KEY
 
 @Composable
 fun ChangeTokenView(

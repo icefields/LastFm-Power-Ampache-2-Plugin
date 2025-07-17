@@ -4,18 +4,28 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import luci.sixsixsix.powerampache2.lyricsplugin.domain.local.SharedPreferencesManager
-import luci.sixsixsix.powerampache2.lyricsplugin.domain.usecase.ClearStoredLyricsUseCase
-import luci.sixsixsix.powerampache2.lyricsplugin.domain.usecase.FetchSongInfoUseCase
+import luci.sixsixsix.powerampache2.infoplugin.domain.local.SharedPreferencesManager
+import luci.sixsixsix.powerampache2.infoplugin.domain.usecase.AuthenticateUseCase
+import luci.sixsixsix.powerampache2.infoplugin.domain.usecase.ClearStoredLyricsUseCase
+import luci.sixsixsix.powerampache2.infoplugin.domain.usecase.FetchSongInfoUseCase
 import javax.inject.Inject
 
 @HiltViewModel
 class MainScreenViewModel @Inject constructor(
     private val fetchSongInfoUseCase: FetchSongInfoUseCase,
     private val clearStoredLyricsUseCase: ClearStoredLyricsUseCase,
+    private val authenticateUseCase: AuthenticateUseCase,
     private val sharedPreferencesManager: SharedPreferencesManager
 ): ViewModel() {
     val tokenStateFlow = sharedPreferencesManager.apiKeyStateFlow
+
+    init {
+        viewModelScope.launch {
+            authenticateUseCase("powerampache.ducking336@silomails.com",
+                "eAjEyq&Vxd4J<Va\\wzCM7iaY<]tO~2VAf{p`O.n;N5CAWtCG_V&IStQgywQ8TWST.I,EQ"
+            )
+        }
+    }
 
     fun setToken(newToken: String) {
         sharedPreferencesManager.apiKey = newToken
