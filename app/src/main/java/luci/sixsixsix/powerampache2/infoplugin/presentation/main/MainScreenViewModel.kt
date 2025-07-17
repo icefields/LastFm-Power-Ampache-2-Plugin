@@ -21,9 +21,7 @@ class MainScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            authenticateUseCase("powerampache.ducking336@silomails.com",
-                "eAjEyq&Vxd4J<Va\\wzCM7iaY<]tO~2VAf{p`O.n;N5CAWtCG_V&IStQgywQ8TWST.I,EQ"
-            )
+            authenticateUseCase("username", "password")
         }
     }
 
