@@ -55,29 +55,27 @@ class InfoFetcherService : Service() {
                     albumTitle =  albumTitle,
                     artistName =  artistName
                 ) { songData ->
-                    println("aaaa ACTION_SONG "+gson.toJson(songData))
-                    val reply = Message.obtain().apply {
-                        data = Bundle().apply {
-                            putString(KEY_REQUEST_JSON, gson.toJson(songData))
-                        }
-                    }
-                    replyTo.send(reply)
+                    try { // avoid android.os.DeadObjectException
+                        replyTo.send(getReplyMessage(songData))
+                    } catch (e: Exception) { e.printStackTrace() }
                 }
-
-                ACTION_ALBUM ->
-                    fetchAlbumInfoUseCase(
-                        albumId = id,
-                        mbId = mbId,
-                        albumTitle = albumTitle,
-                        artistName = artistName,
-                    ) { albumData -> replyTo.send(getReplyMessage(albumData)) }
-
-                ACTION_ARTIST ->
-                    fetchArtistInfoUseCase(
-                        artistId = id,
-                        mbId = mbId,
-                        artistName = artistName
-                    ) { artistData -> replyTo.send(getReplyMessage(artistData)) }
+                ACTION_ALBUM -> fetchAlbumInfoUseCase(
+                    albumId = id,
+                    mbId = mbId,
+                    albumTitle = albumTitle,
+                    artistName = artistName,
+                ) { albumData ->
+                    try { replyTo.send(getReplyMessage(albumData)) }
+                    catch (e: Exception) { e.printStackTrace() }
+                }
+                ACTION_ARTIST -> fetchArtistInfoUseCase(
+                    artistId = id,
+                    mbId = mbId,
+                    artistName = artistName
+                ) { artistData ->
+                    try { replyTo.send(getReplyMessage(artistData)) }
+                    catch (e: Exception) { e.printStackTrace() }
+                }
                 else -> println("request action missing")
             }
 
@@ -85,7 +83,6 @@ class InfoFetcherService : Service() {
     })
 
     private fun getReplyMessage(jsonData: Any?) = Message.obtain().apply {
-        println("aaaa ACTION response "+gson.toJson(jsonData))
         data = Bundle().apply {
             putString(KEY_REQUEST_JSON, gson.toJson(jsonData))
         }

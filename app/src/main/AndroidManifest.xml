@@ -3,9 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <uses-permission android:name="android.permission.INTERNET"/>
-    <permission android:name="luci.sixsixsix.powerampache2.permission.BIND_INFO_PLUGIN"
-        android:protectionLevel="normal" />
-    <uses-permission android:name="luci.sixsixsix.powerampache2.permission.BIND_INFO_PLUGIN" />
+<!--    <uses-permission android:name="luci.sixsixsix.powerampache2.permission.BIND_INFO_PLUGIN" />-->
 
 
     <application
@@ -31,8 +29,7 @@
 
         <service
             android:name="luci.sixsixsix.powerampache2.infoplugin.InfoFetcherService"
-            android:exported="true"
-            android:permission="luci.sixsixsix.powerampache2.permission.BIND_INFO_PLUGIN" />
+            android:exported="true"/>
     </application>
 
 </manifest>

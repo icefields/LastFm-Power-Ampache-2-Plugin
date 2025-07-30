@@ -46,5 +46,7 @@ class LastFmDataSource @Inject constructor(
         username: String,
         password: String,
         method: String = LASTFM_METHOD_GET_MOBILE_SESSION
-    ) = "api_key${apiKey}method${method}password${password}username${username}${secret}".md5()
+    ) = "api_key${apiKey}method${method}password${password}username${username}${secret}".md5().also {
+        println("aaaa $it        "+"api_key${apiKey}method${method}password${password}username${username}${secret}")
+    }
 }

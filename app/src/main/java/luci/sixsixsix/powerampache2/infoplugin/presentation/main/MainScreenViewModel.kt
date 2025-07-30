@@ -21,7 +21,7 @@ class MainScreenViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            authenticateUseCase("username", "password")
+            authenticateUseCase("username/email", "password")
         }
     }
 

@@ -14,8 +14,8 @@ android {
         applicationId = "luci.sixsixsix.powerampache2.infoplugin"
         minSdk = 30
         targetSdk = 35
-        versionCode = 9
-        versionName = "0.01-04"
+        versionCode = 11
+        versionName = "0.01-11"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }

@@ -2,7 +2,6 @@ package luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api
 
 import luci.sixsixsix.powerampache2.infoplugin.data.common.AMPACHE_USER_AGENT
 import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.common.LASTFM_API_KEY
-import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.common.md5
 import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.models.album.LastFmAlbumDto
 import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.models.artist.LastFmArtistDto
 import luci.sixsixsix.powerampache2.infoplugin.data.lastfm_api.models.song.LastFmSongDto
@@ -117,6 +116,7 @@ interface MainNetwork {
         @Field("api_sig") apiSig: String, // call apiSignature(..)
         @Field("username") username: String,
         @Field("method") method: String = LASTFM_METHOD_GET_MOBILE_SESSION,
-        @Field("password") password: String
+        @Field("password") password: String,
+        @Field("format") format: String = "json"
     ): ResponseBody // this will return an object that contains a session key to make authenticated calls, like scrobble
 }
