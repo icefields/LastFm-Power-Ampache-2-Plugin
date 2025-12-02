@@ -1,17 +1,18 @@
 package luci.sixsixsix.powerampache2.infoplugin.presentation.main
 
-import androidx.compose.foundation.background
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Scaffold
-import androidx.compose.material.Text
+import androidx.compose.material3.Button
+import androidx.compose.material3.Divider
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
+
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -21,10 +22,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import luci.sixsixsix.powerampache2.infoplugin.R
 import luci.sixsixsix.powerampache2.infoplugin.presentation.main.components.ChangeTokenView
 import luci.sixsixsix.powerampache2.infoplugin.presentation.main.components.ClearDbButton
 import luci.sixsixsix.powerampache2.infoplugin.presentation.main.components.MainTopBar
-import luci.sixsixsix.powerampache2.infoplugin.R
 
 val mainFontSize = 16.sp
 val smallFontSize = 12.sp
@@ -35,15 +36,18 @@ val screenPadding
 @Composable
 fun MainScreen(
     modifier: Modifier = Modifier,
-    mainScreenViewModel: MainScreenViewModel = hiltViewModel()
+    mainScreenViewModel: MainScreenViewModel = hiltViewModel(),
+    onBack: () -> Unit
 ) {
+    BackHandler(onBack = onBack)
     val token = mainScreenViewModel.tokenStateFlow.collectAsStateWithLifecycle()
     MainScreenContent(
         modifier = modifier,
         token = token.value,
         onTokenChange = mainScreenViewModel::setToken,
         onClearLyrics = mainScreenViewModel::clearStoredLyrics,
-        onFetchLyricsDebug = mainScreenViewModel::fetchLyricsDebug
+        onFetchLyricsDebug = mainScreenViewModel::fetchLyricsDebug,
+        onBack = onBack
     )
 }
 
@@ -53,11 +57,13 @@ private fun MainScreenContent(
     token: String,
     onTokenChange: (String) -> Unit,
     onClearLyrics: () -> Unit,
-    onFetchLyricsDebug: () -> Unit = { }
+    onFetchLyricsDebug: () -> Unit = { },
+    onBack: () -> Unit
 ) {
     Scaffold(
         modifier = modifier,
-        topBar = { MainTopBar(Modifier.fillMaxWidth().background(MaterialTheme.colors.primary)) }
+        containerColor = MaterialTheme.colorScheme.surface,
+        topBar = { MainTopBar(Modifier.fillMaxWidth(), onBack = onBack) }
     ) {
         Box(Modifier.fillMaxSize().padding(it)) {
             Column(
@@ -72,7 +78,7 @@ private fun MainScreenContent(
                 Divider(Modifier.fillMaxWidth().padding(vertical = screenPadding))
                 ClearDbButton(Modifier.fillMaxWidth(), onClearLyrics)
                 Divider(Modifier.fillMaxWidth().padding(vertical = screenPadding))
-                FetchLyricsDebugButton(onFetchLyricsDebug)
+                // FetchLyricsDebugButton(onFetchLyricsDebug)
             }
         }
     }
@@ -89,5 +95,5 @@ private fun FetchLyricsDebugButton(onFetchLyricsDebug: () -> Unit) {
 @Composable
 fun previewMainScreen(){
     MainScreenContent(
-        token = "abcde666", onTokenChange =  { }, onClearLyrics =  { })
+        token = "abcde666", onTokenChange =  { }, onClearLyrics =  { }, onBack = { } )
 }

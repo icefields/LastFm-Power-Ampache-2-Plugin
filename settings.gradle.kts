@@ -19,7 +19,8 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "Power Ampache 2 Lyrics Plugin"
+rootProject.name = "Power Ampache 2 Metadata Plugin"
 include(":app")
 include(":data")
 include(":domain")
+include(":PowerAmpache2Theme")

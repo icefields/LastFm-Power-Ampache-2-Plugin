@@ -1,21 +1,21 @@
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlin.compose)
     id("kotlin-kapt")
     id("dagger.hilt.android.plugin")
 }
 
 android {
     namespace = "luci.sixsixsix.powerampache2.infoplugin"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "luci.sixsixsix.powerampache2.infoplugin"
-        minSdk = 30
-        targetSdk = 35
-        versionCode = 11
-        versionName = "0.01-11"
+        minSdk = 29
+        targetSdk = 36
+        versionCode = 12
+        versionName = "0.01-12"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -60,6 +60,7 @@ android {
 dependencies {
     implementation(project(":domain"))
     implementation(project(":data"))
+    implementation(project(":PowerAmpache2Theme"))
 
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.appcompat)
@@ -69,8 +70,7 @@ dependencies {
     implementation(libs.compose.ui.graphics)
     implementation(libs.compose.lifecycle.viewmodel)
     implementation(libs.androidx.activity.compose) // Required for setContent
-    implementation(libs.androidx.material)
-
+    implementation(libs.compose.material3)
 //    implementation("androidx.lifecycle:lifecycle-service:2.9.1")
 
     // --- Dagger Hilt --- //
